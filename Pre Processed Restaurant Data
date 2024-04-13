@@ -1,0 +1,23 @@
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.impute import SimpleImputer
+
+
+imputer = SimpleImputer(strategy='most_frequent')
+data['Cuisines'] = imputer.fit_transform(data['Cuisines'].values.reshape(-1, 1))
+
+label_encoder = LabelEncoder()
+categorical_columns = ['City', 'Locality', 'Cuisines', 'Currency', 'Has Table booking', 'Has Online delivery']
+
+for column in categorical_columns:
+    data[column] = label_encoder.fit_transform(data[column])
+
+columns_to_drop = ['Restaurant ID', 'Restaurant Name', 'Address', 'Locality Verbose', 'Is delivering now', 'Switch to order menu', 'Rating color', 'Rating text']
+data_cleaned = data.drop(columns=columns_to_drop)
+
+X = data_cleaned.drop('Aggregate rating', axis=1)
+y = data_cleaned['Aggregate rating']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+X_train.shape, X_test.shape, y_train.shape, y_test.shape
